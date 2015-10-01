@@ -1,0 +1,37 @@
+#!/bin/bash
+# This spawns a 1GB Fedora 22 instance attached to public and private networks using SSH key file.
+
+# Set the vars
+VM_NAME=$1
+IMAGE=650fa65d-df4e-48c7-9295-e5bf406a1408
+FLAVOR=a26db766-050d-422a-8682-49991e4c742e
+PUBLIC_INTERFACE=7f9a50cd-16c4-4798-89d3-8e031c29f69f
+PRIVATE_INTERFACE=7f74efd4-0198-498f-98b1-79ac9eb534c0
+KEYNAME=home-auth
+RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
+CENT_IMAGE=fa49f768-f5a4-4f84-9aa6-3c30ba2eb4eb
+
+# Ensures only 1 argument is assessed.
+if [ "$#" -ne "1" ]; then
+	echo "Invalid argument. Script requires only 1 argument (instance name)."
+	exit 1
+fi
+
+# Use Fedora 22 as the default instance image.
+case $VM_NAME in
+	rhel*)
+		echo "Building Red Hat Enterprise Linux node..."
+		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
+		exit 0
+		;;
+	cent*)
+		echo "Building CentOS node..."
+		supernova os boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
+		exit 0
+		;;
+	*)
+		echo "Buidling default Fedora 22 node..."
+		supernova os boot --image $IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
+		exit 0
+		;;
+esac
