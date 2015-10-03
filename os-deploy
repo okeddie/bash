@@ -10,6 +10,8 @@ PRIVATE_INTERFACE=7f74efd4-0198-498f-98b1-79ac9eb534c0
 KEYNAME=home-auth
 RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
 CENT_IMAGE=fa49f768-f5a4-4f84-9aa6-3c30ba2eb4eb
+DATE=$(date +%F)
+LOG=$HOME/${1}_build.os-deploy.$DATE
 
 # Ensures only 1 argument is assessed.
 if [ "$#" -ne "1" ]; then
@@ -21,17 +23,20 @@ fi
 case $VM_NAME in
 	rhel*)
 		echo "Building Red Hat Enterprise Linux node..."
-		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
-		exit 0
+		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	cent*)
 		echo "Building CentOS node..."
-		supernova os boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
-		exit 0
+		supernova os boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	*)
 		echo "Buidling default Fedora 22 node..."
-		supernova os boot --image $IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME
-		exit 0
+		supernova os boot --image $IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 esac
+
+# Sift out facts
+INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
+INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}')
+while [ -n "$INSTANCE_PUB_IP" ] ; do sleep 10 ; echo "Awaiting public ip assignment" ; INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}') ; done
+echo "You may ssh to $INSTANCE_PUB_IP using SSH Keys."
