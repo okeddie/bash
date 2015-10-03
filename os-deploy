@@ -35,8 +35,12 @@ case $VM_NAME in
 		;;
 esac
 
+sleep 10
+
 # Sift out facts
 INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
 INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}')
-while [ -n "$INSTANCE_PUB_IP" ] ; do sleep 10 ; echo "Awaiting public ip assignment" ; INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}') ; done
-echo "You may ssh to $INSTANCE_PUB_IP using SSH Keys."
+while [ -z "$INSTANCE_PUB_IP" ]; 
+do echo "Awaiting IP"; supernova os show INSTANCE_UUID |awk '/public network/{print $5}';
+done 
+echo "SSH to $INSTANCE_PUB_IP"
