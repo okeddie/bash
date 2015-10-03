@@ -13,7 +13,7 @@ CENT_IMAGE=fa49f768-f5a4-4f84-9aa6-3c30ba2eb4eb
 
 # Ensures only 1 argument is assessed.
 if [ "$#" -ne "1" ]; then
-	echo "Invalid argument. Script requires only 1 argument (instance name)."
+	echo "Invalid argument. Script requires only(instance name)."
 	exit 1
 fi
 
