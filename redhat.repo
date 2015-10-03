@@ -1,0 +1,7 @@
+# RHEL7 Repository Configuration. 
+#
+[rhel]
+name=rhel7
+baseurl=http://ansistack.com/rhel7
+enabled=1
+gpgkey=http://ansistack.com/rhel7/RPM-GPG-KEY-redhat-release
