@@ -8,7 +8,10 @@ FLAVOR=a26db766-050d-422a-8682-49991e4c742e
 PUBLIC_INTERFACE=7f9a50cd-16c4-4798-89d3-8e031c29f69f
 PRIVATE_INTERFACE=7f74efd4-0198-498f-98b1-79ac9eb534c0
 KEYNAME=home-auth
-RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
+# No repo enabled:
+#RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
+# RHEL install disk repo enabled:
+RHEL_IMAGE=827c2f6a-d429-4daa-a42c-b4377562c626
 CENT_IMAGE=fa49f768-f5a4-4f84-9aa6-3c30ba2eb4eb
 DATE=$(date +%F)
 LOG=$HOME/${1}_build.os-deploy.$DATE
@@ -21,26 +24,61 @@ fi
 
 # Use Fedora 22 as the default instance image.
 case $VM_NAME in
-	rhel*)
+	rhel*|rhce*|nfs*|network*|storage*)
 		echo "Building Red Hat Enterprise Linux node..."
+		OS=rhel
 		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	cent*)
 		echo "Building CentOS node..."
+		OS=centos
 		supernova os boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	*)
 		echo "Buidling default Fedora 22 node..."
+		OS=fedora
 		supernova os boot --image $IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 esac
 
-sleep 10
-
-# Sift out facts
+sleep 3
+echo "Gathering IP info..."
+# Sift out IP facts
 INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
-INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}')
 while [ -z "$INSTANCE_PUB_IP" ]; 
-do echo "Awaiting IP"; supernova os show INSTANCE_UUID |awk '/public network/{print $5}';
+do echo "Awaiting IP..."; sleep 3; 
+INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}')
 done 
-echo "SSH to $INSTANCE_PUB_IP"
+
+
+# Set username for login
+case $OS in
+	rhel)
+		OS_LOGIN=cloud-user
+		;;
+	centos)
+		OS_LOGIN=centos
+		;;
+	*)
+		OS_LOGIN=fedora
+		;;
+esac
+
+echo "Will attempt to ssh $OS_LOGIN@$INSTANCE_PUB_IP  --- This will take time while instance boots."
+sleep 60
+
+# Auto login disabled because of ssh timeout. 
+case $OS in
+        rhel*)
+                echo "Logging in to $INSTANCE_PUB_IP"
+		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+                ;;
+        centos*)
+                echo "Logging in to $INSTANCE_PUB_IP"
+		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+                ;;
+        *)
+                echo "Logging in to $INSTANCE_PUB_IP"
+		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+                ;;
+esac
