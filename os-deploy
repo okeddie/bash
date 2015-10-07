@@ -24,7 +24,7 @@ fi
 
 # Use Fedora 22 as the default instance image.
 case $VM_NAME in
-	rhel*|rhce*|nfs*|network*|storage*)
+	rhel*|rhce*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp*)
 		echo "Building Red Hat Enterprise Linux node..."
 		OS=rhel
 		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
@@ -42,7 +42,7 @@ case $VM_NAME in
 esac
 
 sleep 3
-echo "Gathering IP info..."
+echo "Collect instance facts..."
 # Sift out IP facts
 INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
 while [ -z "$INSTANCE_PUB_IP" ]; 
@@ -64,8 +64,8 @@ case $OS in
 		;;
 esac
 
-echo "Will attempt to ssh $OS_LOGIN@$INSTANCE_PUB_IP  --- This will take time while instance boots."
-sleep 60
+echo "Attempting to ssh: $OS_LOGIN@$INSTANCE_PUB_IP >>> Pausing while instance boots."
+sleep 45
 
 # Auto login disabled because of ssh timeout. 
 case $OS in
