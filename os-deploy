@@ -22,6 +22,16 @@ if [ "$#" -ne "1" ]; then
 	exit 1
 fi
 
+case $1 in
+	--help|help|-h)
+		echo "Usgae: $0 VM_NAME"
+		echo "For RHEL, use name like: rhel*|rhce*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp* "
+		echo "For CENTOS, use name like: cent* "
+		echo "For Fedora, use any other naming convention. Fedora is the default base image to use."
+		exit 0
+		;;
+esac
+
 # Use Fedora 22 as the default instance image.
 case $VM_NAME in
 	rhel*|rhce*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp*)
