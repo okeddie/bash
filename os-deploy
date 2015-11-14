@@ -35,17 +35,17 @@ esac
 # Use Fedora 22 as the default instance image.
 case $VM_NAME in
 	rhel*|rhce*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp*)
-		echo "Building Red Hat Enterprise Linux node..."
+		echo "Red Hat Enterprise Linux build accepted..."
 		OS=rhel
 		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	cent*)
-		echo "Building CentOS node..."
+		echo "CentOS build accepted..."
 		OS=centos
 		supernova os boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	*)
-		echo "Buidling default Fedora 22 node..."
+		echo "Default Fedora 22 build accepted..."
 		OS=fedora
 		supernova os boot --image $IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
@@ -74,10 +74,27 @@ case $OS in
 		;;
 esac
 
-echo "Attempting to ssh: $OS_LOGIN@$INSTANCE_PUB_IP >>> Pausing while instance boots."
-sleep 45
+# Progress and info section.
+echo "Attempting to ssh: $OS_LOGIN@$INSTANCE_PUB_IP ---- Pausing while instance boots."
+sleep 5
+echo -ne '####                     (15%)\r'
+sleep 15
+echo -ne '############             (40%)\r'
+sleep 15
+echo -ne '##################       (60%)\r'
+sleep 10
+echo -ne '########################(100%)\r'
+echo -ne '\n'
 
-# Auto login disabled because of ssh timeout. 
+# Add network private network interface.
+case $VM_NAME in
+	network*)
+		echo "Build complete but adding additional network interface for network specific node.. "
+		supernova os interface-attach $INSTANCE_UUID --net-id $PRIVATE_INTERFACE
+		;;
+esac
+
+# Auto login
 case $OS in
         rhel*)
                 echo "Logging in to $INSTANCE_PUB_IP"
