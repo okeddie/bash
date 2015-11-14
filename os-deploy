@@ -56,7 +56,7 @@ echo "Collect instance facts..."
 # Sift out IP facts
 INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
 while [ -z "$INSTANCE_PUB_IP" ]; 
-do echo "Awaiting IP..."; sleep 3; 
+do echo "Configuring public networking..."; sleep 3; 
 INSTANCE_PUB_IP=$(supernova os show $INSTANCE_UUID |awk '/public network/{print $5}')
 done 
 
@@ -75,7 +75,7 @@ case $OS in
 esac
 
 # Progress and info section.
-echo "Attempting to ssh: $OS_LOGIN@$INSTANCE_PUB_IP ---- Pausing while instance boots."
+echo "---- instance is booting ----"
 sleep 5
 echo -ne '####                     (15%)\r'
 sleep 15
@@ -84,13 +84,18 @@ sleep 15
 echo -ne '##################       (60%)\r'
 sleep 10
 echo -ne '########################(100%)\r'
+
+
 echo -ne '\n'
 
 # Add network private network interface.
 case $VM_NAME in
 	network*)
-		echo "Build complete but adding additional network interface for network specific node.. "
-		supernova os interface-attach $INSTANCE_UUID --net-id $PRIVATE_INTERFACE
+		echo "Build complete, adding additional network interface in background. "
+		supernova os interface-attach $INSTANCE_UUID --net-id $PRIVATE_INTERFACE >> /dev/null 2>&1
+		;;
+	*)
+		echo "Build complete."
 		;;
 esac
 
