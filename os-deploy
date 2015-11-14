@@ -85,7 +85,6 @@ echo -ne '##################       (60%)\r'
 sleep 10
 echo -ne '########################(100%)\r'
 
-
 echo -ne '\n'
 
 # Add network private network interface.
@@ -107,10 +106,12 @@ case $OS in
                 ;;
         centos*)
                 echo "Logging in to $INSTANCE_PUB_IP"
+		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         *)
                 echo "Logging in to $INSTANCE_PUB_IP"
+		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
 esac
