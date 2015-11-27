@@ -86,6 +86,8 @@ sleep 10
 echo -ne '########################(100%)\r'
 
 echo -ne '\n'
+echo "Cleaning up log $LOG"
+rm -f $LOG
 
 # Add network private network interface.
 case $VM_NAME in
