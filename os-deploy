@@ -1,5 +1,6 @@
 #!/bin/bash
 # This spawns a 1GB Fedora 22 instance attached to public and private networks using SSH key file.
+# Usage: ./os-deploy [INSTANCE_NAME]
 
 # Set the vars
 VM_NAME=$1
@@ -18,7 +19,7 @@ LOG=$HOME/${1}_build.os-deploy.$DATE
 
 # Ensures only 1 argument is assessed.
 if [ "$#" -ne "1" ]; then
-	echo "Invalid argument. Script requires only(instance name)."
+	echo "Invalid argument. Script requires only instance name."
 	exit 1
 fi
 
@@ -116,4 +117,20 @@ case $OS in
 		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
+esac
+
+# Handling script exit status.
+case $? in 
+	0)
+	exit 0
+	;;
+	1)
+	echo "Instance timed out or failed to login."
+	echo "Please retry ssh $OS_LOGIN@$INSTANCE_PUB_IP"
+	exit 0
+	;;
+	255)
+	echo "Instance was deleted while you were logged in via ssh."
+	exit 0
+	;;
 esac
