@@ -104,16 +104,16 @@ esac
 # Auto login
 case $OS in
         rhel*)
-                echo "Logging in to $INSTANCE_PUB_IP"
+                echo "Logging into $INSTANCE_PUB_IP"
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         centos*)
-                echo "Logging in to $INSTANCE_PUB_IP"
+                echo "Logging into $INSTANCE_PUB_IP"
 		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         *)
-                echo "Logging in to $INSTANCE_PUB_IP"
+                echo "Logging into $INSTANCE_PUB_IP"
 		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
