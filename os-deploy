@@ -1,11 +1,11 @@
 #!/bin/bash
-# This spawns a 1GB Fedora 22 instance attached to public and private networks using SSH key file.
+# This spawns a 2GB Fedora 22 instance attached to public and private networks using SSH key file.
 # Usage: ./os-deploy [INSTANCE_NAME]
 
 # Set the vars
 VM_NAME=$1
 IMAGE=650fa65d-df4e-48c7-9295-e5bf406a1408
-FLAVOR=a26db766-050d-422a-8682-49991e4c742e
+FLAVOR=7e5b213a-d6f5-4c8f-97ff-7abbf7669257
 PUBLIC_INTERFACE=7f9a50cd-16c4-4798-89d3-8e031c29f69f
 PRIVATE_INTERFACE=7f74efd4-0198-498f-98b1-79ac9eb534c0
 KEYNAME=home-auth
@@ -79,10 +79,16 @@ esac
 echo "---- instance is booting ----"
 sleep 5
 echo -ne '####                     (15%)\r'
-sleep 15
+sleep 5
+echo -ne '#########                (30%)\r'
+sleep 5
 echo -ne '############             (40%)\r'
-sleep 15
+sleep 5
+echo -ne '##############           (50%)\r'
+sleep 5
 echo -ne '##################       (60%)\r'
+sleep 10
+echo -ne '#####################    (85%)\r'
 sleep 10
 echo -ne '########################(100%)\r'
 
@@ -127,10 +133,10 @@ case $? in
 	1)
 	echo "Instance timed out or failed to login."
 	echo "Please retry ssh $OS_LOGIN@$INSTANCE_PUB_IP"
-	exit 0
+	exit 1
 	;;
 	255)
 	echo "Instance was deleted while you were logged in via ssh."
-	exit 0
+	exit 1
 	;;
 esac
