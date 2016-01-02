@@ -136,7 +136,7 @@ case $? in
 	exit 1
 	;;
 	255)
-	echo "Instance was deleted while you were logged in via ssh."
+	echo "Instance failed during auto log in via ssh. Try manually."
 	exit 1
 	;;
 esac
