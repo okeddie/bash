@@ -26,7 +26,7 @@ fi
 case $1 in
 	--help|help|-h)
 		echo "Usgae: $0 VM_NAME"
-		echo "For RHEL, use name like: rhel*|rhce*|web*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp* "
+		echo "For RHEL, use name like: rhel*|rhce*|web*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp*|dns* "
 		echo "For CENTOS, use name like: cent* "
 		echo "For Fedora, use any other naming convention. Fedora is the default base image to use."
 		exit 0
@@ -35,7 +35,7 @@ esac
 
 # Use Fedora 22 as the default instance image.
 case $VM_NAME in
-	rhel*|rhce*|nfs*|network*|web*|storage*|ssh*|iscsi*|samba*|smtp*)
+	rhel*|rhce*|nfs*|network*|web*|storage*|ssh*|iscsi*|samba*|smtp*|dns*)
 		echo "Red Hat Enterprise Linux build accepted..."
 		OS=rhel
 		supernova os boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --nic net-id=$PRIVATE_INTERFACE --key $KEYNAME $VM_NAME > $LOG
