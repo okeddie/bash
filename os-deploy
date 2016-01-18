@@ -76,7 +76,8 @@ case $OS in
 esac
 
 # Progress and info section.
-echo "---- instance is booting ----"
+echo "---- instance obtained ip $INSTANCE_PUB_IP ----"
+echo "----       instance is booting.        ----"
 sleep 5
 echo -ne '####                     (15%)\r'
 sleep 5
