@@ -100,7 +100,7 @@ rm -f $LOG
 # Add network private network interface.
 case $VM_NAME in
 	network*)
-		echo "Build complete, adding additional network interface in background. "
+		echo "Build complete, attaching additional network interface in background. "
 		supernova os interface-attach $INSTANCE_UUID --net-id $PRIVATE_INTERFACE >> /dev/null 2>&1
 		;;
 	*)
