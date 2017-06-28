@@ -74,7 +74,7 @@ esac
 
 # Progress and info section.
 echo -e "${BLUE}---- instance obtained ip${NC} ${YELLER}$INSTANCE_PUB_IP${NC} ${BLUE}----${NC}"
-echo -e "${GREEN}----       instance is booting.         ----${NC}"
+echo -e "${BLUE}----       instance is booting.         ----${NC}"
 sleep 5
 echo -ne '####                     (15%$)\r'
 sleep 5
@@ -103,7 +103,7 @@ case $OS in
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         centos*)
-                echo "${GREEN}Logging into $INSTANCE_PUB_IP${NC}"
+                echo -e "${GREEN}Logging into $INSTANCE_PUB_IP${NC}"
 		sleep 5
 		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
