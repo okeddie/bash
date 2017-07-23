@@ -40,12 +40,14 @@ case $VM_NAME in
 	rhel*|rhce*|nfs*|network*|web*|storage*|ssh*|iscsi*|samba*|smtp*|dns*)
 		echo -e "${GREEN}Red Hat Enterprise Linux build accepted...${NC}"
 		OS=rhel
-		supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
+		source $HOME/.supernova_venv/bin/activate
+		$HOME/.supernova_venv/bin/supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
 		;;
 	*)
 		echo -e "${GREEN}CentOS build accepted...${NC}"
 		OS=centos
-		supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
+		source $HOME/.supernova_venv/bin/activate
+		$HOME/.supernova_venv/bin/supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
 		;;
 esac
 
