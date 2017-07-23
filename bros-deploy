@@ -52,11 +52,18 @@ esac
 sleep 3
 echo -e "${YELLER}Collect instance facts...${NC}"
 # Sift out IP facts
+RETRY_COUNT=0
 INSTANCE_UUID=$(awk '/\| id/{print $4}' $LOG)
-while [ -z "$INSTANCE_PUB_IP" ]; 
-do echo -e "${YELLER}Configuring public networking...${NC}"; sleep 3; 
+while [ -z "$INSTANCE_PUB_IP" ] && [ "$RETRY_COUNT" -lt 6 ]; 
+do echo -e "${YELLER}Configuring public networking...Poll $RETRY_COUNT ${NC}"; sleep 3;
+let RETRY_COUNT=$RETRY_COUNT+1
 INSTANCE_PUB_IP=$(supernova bro show $INSTANCE_UUID |awk '/provider network/{print $5}')
 done 
+
+if [ -z "$INSTANCE_PUB_IP" ]; then
+	echo -e "${RED}Instance failed to obtain IP.${NC}"
+	exit 1
+fi
 
 
 # Set username for login. default rhel names have been changed in base image. Don't use cloud-user or centos.
