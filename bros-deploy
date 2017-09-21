@@ -10,9 +10,11 @@ PUBLIC_INTERFACE=f9455ea8-4687-466a-9962-388472d8f0d2
 #RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
 # RHEL install disk repo enabled:
 RHEL_IMAGE=4b9c96cd-6780-420a-b3ae-286a84cb35d6
-CENT_IMAGE=5f99db2f-f6c9-4e93-93ab-f97815976d17
+#CENT_IMAGE=5f99db2f-f6c9-4e93-93ab-f97815976d17
+CENT_IMAGE=afc9a500-2607-4cab-a89e-f054e7fc30a8
 DATE=$(date +%F)
 LOG=$HOME/${1}_build.bros-deploy.$DATE
+KEYNAME=home_auth
 
 RED="\033[0;31m"
 GREEN="\033[1;32m"
@@ -41,13 +43,13 @@ case $VM_NAME in
 		echo -e "${GREEN}Red Hat Enterprise Linux build accepted...${NC}"
 		OS=rhel
 		source $HOME/.supernova_venv/bin/activate
-		$HOME/.supernova_venv/bin/supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
+		$HOME/.supernova_venv/bin/supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 	*)
 		echo -e "${GREEN}CentOS build accepted...${NC}"
 		OS=centos
 		source $HOME/.supernova_venv/bin/activate
-		$HOME/.supernova_venv/bin/supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE $VM_NAME > $LOG
+		$HOME/.supernova_venv/bin/supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $VM_NAME > $LOG
 		;;
 esac
 
