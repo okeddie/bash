@@ -1,5 +1,5 @@
 #!/bin/bash
-# This spawns a 2GB Fedora 22 instance attached to public and private networks using SSH key file.
+# This spawns a 4GB centos 7.4 instance attached to public using SSH key file.
 # Usage: ./bro-deploy [INSTANCE_NAME]
 
 # Set the vars
@@ -10,8 +10,7 @@ PUBLIC_INTERFACE=f9455ea8-4687-466a-9962-388472d8f0d2
 #RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
 # RHEL install disk repo enabled:
 RHEL_IMAGE=4b9c96cd-6780-420a-b3ae-286a84cb35d6
-#CENT_IMAGE=5f99db2f-f6c9-4e93-93ab-f97815976d17
-CENT_IMAGE=afc9a500-2607-4cab-a89e-f054e7fc30a8
+CENT_IMAGE=9589ebdc-ad95-41ef-8635-f30420c1ed7d
 DATE=$(date +%F)
 LOG=$HOME/${1}_build.bros-deploy.$DATE
 KEYNAME=home_auth
