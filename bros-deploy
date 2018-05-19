@@ -12,7 +12,7 @@ PUBLIC_INTERFACE=f9455ea8-4687-466a-9962-388472d8f0d2
 RHEL_IMAGE=4b9c96cd-6780-420a-b3ae-286a84cb35d6
 CENT_IMAGE=9589ebdc-ad95-41ef-8635-f30420c1ed7d
 DATE=$(date +%F)
-LOG=$HOME/${1}_build.bros-deploy.$DATE
+LOG=/tmp/${1}_build.bros-deploy.$DATE
 KEYNAME=home_auth
 
 RED="\033[0;31m"
@@ -99,10 +99,10 @@ sleep 10
 echo -ne '#####################    (85%)\r'
 sleep 10
 echo -ne '########################(100%)\r'
-
 echo -ne '\n'
-echo -e "${YELLER}Cleaning up log $LOG${NC}"
-rm -f $LOG
+
+#echo -e "${YELLER}Cleaning up log $LOG${NC}"
+#rm -f $LOG
 
 # Auto login
 # Times are longer for cent and fedora as they seem to lag.
