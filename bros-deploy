@@ -4,17 +4,14 @@
 
 # Set the vars
 VM_NAME=$1
-FLAVOR=2
-PUBLIC_INTERFACE=f9455ea8-4687-466a-9962-388472d8f0d2
-# No repo enabled:
-#RHEL_IMAGE=388c42d3-f5c8-40a5-abcf-9a27ef3a5f9a
-# RHEL install disk repo enabled:
+HOST=$2
+FLAVOR=a552bff9-ddb4-4043-9786-8043367f3921
+PUBLIC_INTERFACE=b41a1d65-d339-40cf-b943-ef0b9ea547cb
 RHEL_IMAGE=4b9c96cd-6780-420a-b3ae-286a84cb35d6
-CENT_IMAGE=9589ebdc-ad95-41ef-8635-f30420c1ed7d
+CENT_IMAGE=abf206f3-e26c-4e55-bfae-28e7f9732cb3
 DATE=$(date +%F)
 LOG=/tmp/${1}_build.bros-deploy.$DATE
 KEYNAME=home_auth
-
 RED="\033[0;31m"
 GREEN="\033[1;32m"
 NC="\033[0m"
@@ -22,19 +19,23 @@ YELLER="\033[1;33m"
 BLUE="\033[1;34m"
 
 # Ensures only 1 argument is assessed.
-if [ "$#" -ne "1" ]; then
-	echo -e "${RED}Invalid argument.${NC} Script requires ${YELLER}only${NC} instance name."
+if [ "$#" -lt "1" ] || [ "$#" -gt "2" ]; then
+	echo -e "${RED}Invalid argument count.${NC}"
 	exit 1
 fi
-
 case $1 in
 	--help|help|-h)
 		echo -e "${GREEN}Usage: $0 VM_NAME${NC}"
 		echo "For RHEL, use name like: rhel*|rhce*|web*|nfs*|network*|storage*|ssh*|iscsi*|samba*|smtp*|dns* "
 		echo "For CENTOS, use name NOT like RHEL types. "
+		echo "For target host, make host the 2nd argument."
 		exit 0
 		;;
 esac
+
+if [ -n "$HOST" ]; then
+		HOST_PARAMS="--availability-zone nova:$HOST"
+fi
 
 # Use centos 7 as default.
 case $VM_NAME in
@@ -42,13 +43,15 @@ case $VM_NAME in
 		echo -e "${GREEN}Red Hat Enterprise Linux build accepted...${NC}"
 		OS=rhel
 		source $HOME/.supernova_venv/bin/activate
-		$HOME/.supernova_venv/bin/supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $VM_NAME > $LOG
+		$HOME/.supernova_venv/bin/supernova bro boot --image $RHEL_IMAGE --flavor $FLAVOR \
+			--nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $HOST_PARAMS $VM_NAME > $LOG
 		;;
 	*)
 		echo -e "${GREEN}CentOS build accepted...${NC}"
 		OS=centos
 		source $HOME/.supernova_venv/bin/activate
-		$HOME/.supernova_venv/bin/supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR --nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $VM_NAME > $LOG
+		$HOME/.supernova_venv/bin/supernova bro boot --image $CENT_IMAGE --flavor $FLAVOR \
+			--nic net-id=$PUBLIC_INTERFACE --key $KEYNAME $HOST_PARAMS $VM_NAME > $LOG
 		;;
 esac
 
@@ -108,19 +111,19 @@ echo -ne '\n'
 # Times are longer for cent and fedora as they seem to lag.
 case $OS in
         rhel*)
-                echo -e "${GREEN}Logging into $INSTANCE_PUB_IP${NC}"
-		sleep 20
-		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+                echo -e "${GREEN}Logging into $INSTANCE_PUB_IP${NC} disabled"
+#		sleep 20
+#		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         centos*)
-                echo -e "${GREEN}Logging into $INSTANCE_PUB_IP${NC}"
-		sleep 15
-		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+                echo -e "${GREEN}Logging into $INSTANCE_PUB_IP${NC} disabled"
+#		sleep 15
+#		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
         *)
                 echo "place_holder_catchall"
-		sleep 5
-		ssh $OS_LOGIN@$INSTANCE_PUB_IP
+#		sleep 5
+#		ssh $OS_LOGIN@$INSTANCE_PUB_IP
                 ;;
 esac
 
